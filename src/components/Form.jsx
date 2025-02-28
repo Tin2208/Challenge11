@@ -11,15 +11,22 @@ const Form = ({ addItem, currentItem }) => {
     e.preventDefault();
     const newErrors = {};
     if (!Product.trim()) newErrors.Product = "Tên sản phẩm không được để trống";
-    if (!Price.trim() || isNaN(Price) || Number(Price) <= 0)
+    if (!Price || isNaN(Price) || Number(Price) <= 0)
       newErrors.Price = "Giá phải là số và lớn hơn 0";
     if (!Status.trim()) newErrors.Status = "Trạng thái không được để trống";
     setErrors(newErrors);
     console.log("newErrors", newErrors);
 
+    console.log("Length: ", Object.keys(newErrors).length);
     if (Object.keys(newErrors).length > 0) return;
 
-    addItem({ id: Date.now(), Product, Price, Status });
+    const cleanedData = {
+      Product: Product.trim(),
+      Price: Number(Price),
+      Status: Status.trim(),
+    };
+
+    addItem({ id: Date.now(), ...cleanedData });
 
     setProduct("");
     setPrice("");
@@ -36,7 +43,7 @@ const Form = ({ addItem, currentItem }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex justify-between my-10 gap-3">
+      <div className="flex justify-between my-10 gap-3 ">
         <div>
           <input
             type="text"
@@ -67,12 +74,14 @@ const Form = ({ addItem, currentItem }) => {
           />
           {errors.Status && <p className="text-red-500">{errors.Status}</p>}
         </div>
-        <button
-          type="submit"
-          className="h-10 py-1 px-3 font-semibold rounded border border-slate-200 text-slate-600 bg-[white] cursor-pointer"
-        >
-          Save
-        </button>
+        <div>
+          <button
+            type="submit"
+            className="h-10 py-1 px-3 font-semibold rounded border border-slate-200 text-slate-600 bg-[white] cursor-pointer"
+          >
+            Save
+          </button>
+        </div>
       </div>
     </form>
   );
